@@ -1,18 +1,13 @@
 ### Back End JS > Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
-
---- 
-
-This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
-
----
-
 ## Northcoders News API
 
 ### Overview
+
 ### Prerequisite:
+
 Read notes:
+
 1. Git Branching
 2. Advanced Error Handling
 3. API Hosting
@@ -52,8 +47,6 @@ git push origin 2-get-topics
 
 ```
 
-From GitHub, you can make a pull request and share the link and ticket number via a pull request specific nchelp using the command `nchelp pr`. A tutor will review your code on GitHub, so keep an eye on your email notifications. Support through nchelp will be available, but mentors will be prioritising pull requests and so nchelp should be used as a last resort.
-
 Once a pull request been accepted, be sure to switch back to the main branch and pull down the updated changes.
 
 ```
@@ -77,6 +70,16 @@ To ensure we are not committing broken code, this project makes use of git hooks
 
 The [Husky documentation](https://typicode.github.io/husky/#/) explains how to configure Husky for your own project, as well as creating your own custom hooks.
 
+### Setup
+
+Setting up your enviroment variables:
+at the root directory, you create two files:
+
+1. `.env.test`
+2. `.env.development`
+
+Within each of the file add the respective database names to connect to locally. For reference look inside `.env-example`.
+
 ### Outline of Core Tasks
 
 To view each challenge in detail, you can click the navigation buttons on the left-hand side of the screen. You do not need to have completed a challenge to view the next one.
@@ -85,61 +88,52 @@ If you would like to see a shorthand reminder for all the core tasks, they are a
 
 `GET /api/topics`
 
-* responds with a list of topics
-
+- responds with a list of topics
 
 `GET /api`
 
-* responds with a list of available endpoints
-
+- responds with a list of available endpoints
 
 `GET /api/articles/:article_id`
 
-* responds with a single article by article_id
-
+- responds with a single article by article_id
 
 `GET /api/articles`
 
-* responds with a list of articles
-
+- responds with a list of articles
 
 `GET /api/articles/:article_id/comments`
 
-* responds with a list of comments by article_id
-
+- responds with a list of comments by article_id
 
 `POST /api/articles/:article_id/comments`
 
-* add a comment by article_id
-
+- add a comment by article_id
 
 `PATCH /api/articles/:article_id`
 
-* updates an article by article_id
-
+- updates an article by article_id
 
 `DELETE /api/comments/:comment_id`
 
-* deletes a comment by comment_id
-
+- deletes a comment by comment_id
 
 `GET /api/users`
 
-* responds with a list of users
-
+- responds with a list of users
 
 `GET /api/articles (queries)`
 
-* allows articles to be filtered and sorted
-
+- allows articles to be filtered and sorted
 
 `GET /api/articles/:article_id (comment count)`
 
-* adds a comment count to the response when retrieving a single article
+- adds a comment count to the response when retrieving a single article
 
---------
+---
 
 ### Tasks
+
 Make your way through the following sections. You'll get access to the next section when you submit one.
 
 1. Project Setup

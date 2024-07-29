@@ -1,5 +1,16 @@
 const db = require("../db/connection");
 
+exports.selectArticles = () => {
+  let sqlQuery = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, 
+  COUNT(comments.article_id)::INT AS comment_count 
+  FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id
+  GROUP BY articles.article_id
+  ORDER BY articles.created_at DESC;`;
+  return db.query(sqlQuery).then(({ rows: articles }) => {
+    return articles;
+  });
+};
+
 exports.selectArticleById = (articleId) => {
   if (isNaN(Number(articleId))) {
     return Promise.reject({ status: 400, msg: "Invalid Article ID" });

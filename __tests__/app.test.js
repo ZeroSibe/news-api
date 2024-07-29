@@ -18,6 +18,19 @@ describe("App", () => {
         });
     });
   });
+  describe("/api", () => {
+    describe("GET /api", () => {
+      test("GET:200 responds with an object containing all the available endpoints on this API", () => {
+        const expectedEndpoints = require("../endpoints.json", "utf-8");
+        return request(app)
+          .get("/api")
+          .expect(200)
+          .then(({ body: { endpoints } }) => {
+            expect(endpoints).toEqual(expectedEndpoints);
+          });
+      });
+    });
+  });
   describe("/api/topics", () => {
     describe("GET /api/topics", () => {
       test("GET:200 responds with an array of topic objects with the correct properties", () => {

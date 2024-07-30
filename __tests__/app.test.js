@@ -120,7 +120,7 @@ describe("App", () => {
         .get(`/api/articles/${articleId}`)
         .expect(404)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Article Not Found");
+          expect(msg).toBe("Article 9999 Not Found");
         });
     });
     test("GET:400 returns appropriate status and error message when given an invalid id", () => {
@@ -130,6 +130,60 @@ describe("App", () => {
         .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Invalid Article ID");
+        });
+    });
+  });
+  describe("/api/articles/:article_id/comments", () => {
+    test("GET:200 responds with an array of comments with the correct properties for the given article_id", () => {
+      return request(app)
+        .get(`/api/articles/9/comments`)
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toHaveLength(2);
+          comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: 9,
+            });
+          });
+        });
+    });
+    test("GET:404 returns appropriate status and error message when given a valid but non-existent id", () => {
+      return request(app)
+        .get(`/api/articles/9999/comments`)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Article 9999 Not Found");
+        });
+    });
+    test("GET:400 returns appropriate status and error message when given an invalid id", () => {
+      return request(app)
+        .get(`/api/articles/invalid/comments`)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid Article ID");
+        });
+    });
+    test("GET:200 returns an empty array when given a valid article_id that exists but has no associated comments", () => {
+      return request(app)
+        .get(`/api/articles/2/comments`)
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toHaveLength(0);
+        });
+    });
+    test("GET:200 responds with comments sorted by date in descending order", () => {
+      return request(app)
+        .get(`/api/articles/1/comments`)
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
         });
     });
   });

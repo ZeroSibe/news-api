@@ -30,3 +30,24 @@ exports.selectArticleById = (articleId) => {
     return rows[0];
   });
 };
+
+exports.updateArticle = (articleId, newVote) => {
+  if (isNaN(Number(articleId))) {
+    return Promise.reject({ status: 400, msg: "Invalid Article ID" });
+  }
+  if (isNaN(Number(newVote))) {
+    return Promise.reject({ status: 400, msg: "inc_votes must be a number" });
+  }
+
+  const queryVals = [newVote, articleId];
+  const queryStr = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`;
+  return db.query(queryStr, queryVals).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `Article ${articleId} Not Found`,
+      });
+    }
+    return rows[0];
+  });
+};

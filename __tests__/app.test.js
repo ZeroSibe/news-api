@@ -186,5 +186,101 @@ describe("App", () => {
           });
         });
     });
+    test("POST:201 inserts a new comment to the db and sends the new comment back to the client", () => {
+      const newComment = {
+        username: "lurker",
+        body: "posting a 201 comment",
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment).toMatchObject({
+            comment_id: 19,
+            votes: 0,
+            created_at: expect.any(String),
+            author: "lurker",
+            body: "posting a 201 comment",
+            article_id: 3,
+          });
+        });
+    });
+    test("POST:400 responds with an appropriate status and error message when given an invalid id", () => {
+      const newComment = {
+        username: "lurker",
+        body: "posting a comment",
+      };
+      return request(app)
+        .post("/api/articles/invalid/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid Article ID");
+        });
+    });
+    test("POST:400 responds with an appropriate status and error message when given a bad comment - missing required body field", () => {
+      const badComment = {
+        username: "lurker",
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(badComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Missing required field in comment post");
+        });
+    });
+    test("POST:400 responds with an appropriate status and error message when given a bad comment - missing required username field", () => {
+      const badComment = {
+        body: "400 no username",
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(badComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid username");
+        });
+    });
+    test("POST:400 responds with an appropriate status and error message when given a bad comment - invalid username", () => {
+      const badComment = {
+        username: 123,
+        body: "400 invalid username",
+      };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(badComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid username");
+        });
+    });
+    test("POST:404 responds with an appropriate status and error message when given a valid comment but non-existent id", () => {
+      const newComment = {
+        username: "lurker",
+        body: "posting a comment",
+      };
+      return request(app)
+        .post("/api/articles/999/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Article 999 Not Found");
+        });
+    });
+    test("POST:404 responds with an appropriate status and error message when given a valid comment but non-existent username", () => {
+      const newComment = {
+        username: "iDontExist",
+        body: "posting a 404 username comment",
+      };
+      return request(app)
+        .post("/api/articles/9/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("User iDontExist Not Found");
+        });
+    });
   });
 });

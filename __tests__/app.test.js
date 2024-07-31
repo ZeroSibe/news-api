@@ -132,6 +132,98 @@ describe("App", () => {
           expect(msg).toBe("Invalid Article ID");
         });
     });
+    test("PATCH:200 sends updated article back to client - increment vote", () => {
+      const body = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch(`/api/articles/1`)
+        .send(body)
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toMatchObject({
+            author: "butter_bridge",
+            title: "Living in the shadow of a great man",
+            article_id: 1,
+            body: "I find this existence challenging",
+            topic: "mitch",
+            created_at: convertTimestampToDate(1594329060000),
+            votes: 101,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          });
+        });
+    });
+    test("PATCH:200 sends updated article back to client - decrement vote", () => {
+      const body = {
+        inc_votes: -100,
+      };
+      return request(app)
+        .patch(`/api/articles/1`)
+        .send(body)
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toMatchObject({
+            author: "butter_bridge",
+            title: "Living in the shadow of a great man",
+            article_id: 1,
+            body: "I find this existence challenging",
+            topic: "mitch",
+            created_at: convertTimestampToDate(1594329060000),
+            votes: 0,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          });
+        });
+    });
+    test("PATCH:404 responds with appropriate status and error message when given a valid but non-existent id", () => {
+      const body = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch(`/api/articles/9999`)
+        .send(body)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Article 9999 Not Found");
+        });
+    });
+    test("PATCH:400 responds with appropriate status and error message when given an invalid id", () => {
+      const body = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch(`/api/articles/invalid`)
+        .send(body)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid Article ID");
+        });
+    });
+    test("PATCH:400 responds with appropriate status and error message when given invalid inc_votes type", () => {
+      const body = {
+        inc_votes: "invalid type",
+      };
+      return request(app)
+        .patch(`/api/articles/1`)
+        .send(body)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("inc_votes must be a number");
+        });
+    });
+    test("PATCH:400 responds with appropriate status and error message when given an invalid/missing property", () => {
+      const body = {
+        title: "missing property",
+      };
+      return request(app)
+        .patch(`/api/articles/1`)
+        .send(body)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("inc_votes must be a number");
+        });
+    });
   });
   describe("/api/articles/:article_id/comments", () => {
     test("GET:200 responds with an array of comments with the correct properties for the given article_id", () => {

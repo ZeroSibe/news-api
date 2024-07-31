@@ -7,6 +7,8 @@ const {
   handlePsqlErrors,
 } = require("./controllers/errors-controllers");
 
+app.use(express.json());
+
 app.use("/api", apiRouter);
 
 app.all("*", (req, res) => {

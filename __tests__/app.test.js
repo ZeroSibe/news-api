@@ -237,6 +237,14 @@ describe("App", () => {
           });
         });
     });
+    test("GET:200 article object has a comment_count property", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toHaveProperty("comment_count");
+        });
+    });
     test("GET:404 returns appropriate status and error message when given a valid but non-existent id", () => {
       const articleId = 9999;
       return request(app)

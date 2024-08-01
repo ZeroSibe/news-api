@@ -60,8 +60,12 @@ exports.selectArticleById = (articleId) => {
     return Promise.reject({ status: 400, msg: "Invalid Article ID" });
   }
 
-  const sqlQuery = `SELECT * FROM articles WHERE article_id = $1;`;
-  const queryVals = [articleId];
+  let sqlQuery = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url, 
+  COUNT(comments.article_id)::INT AS comment_count 
+  FROM articles 
+  LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;`;
+
+  let queryVals = [articleId];
 
   return db.query(sqlQuery, queryVals).then(({ rows }) => {
     if (rows.length === 0) {

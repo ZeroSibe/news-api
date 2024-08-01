@@ -187,6 +187,35 @@ describe("App", () => {
           });
       });
     });
+    describe("?topic", () => {
+      test("GET:200 sends an array of articles by their valid topic query", () => {
+        return request(app)
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toHaveLength(12);
+            articles.forEach((article) => {
+              expect(article.topic).toBe("mitch");
+            });
+          });
+      });
+      test("GET:400 sends an appropriate status and error message for an invalid topic query", () => {
+        return request(app)
+          .get("/api/articles?topic=123")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Invalid topic query");
+          });
+      });
+      test("GET:404 responds with an appropriate status and error message when given a valid but non-existent topic query", () => {
+        return request(app)
+          .get("/api/articles?topic=apple")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("No Articles Found");
+          });
+      });
+    });
   });
   describe("/api/articles/:article_id", () => {
     test("GET:200 responds with an article object with the correct properties", () => {

@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-exports.selectArticles = (sortBy = "created_at", order = "desc") => {
+exports.selectArticles = (sortBy = "created_at", order = "desc", topic) => {
   const validSortBys = [
     "created_at",
     "votes",
@@ -23,14 +23,34 @@ exports.selectArticles = (sortBy = "created_at", order = "desc") => {
       msg: "Invalid order query",
     });
   }
-  const queryVals = [];
-  const sqlQuery = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, 
+  if (!isNaN(topic)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid topic query",
+    });
+  }
+  let queryVals = [];
+
+  let sqlQuery = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, 
   COUNT(comments.article_id)::INT AS comment_count 
-  FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id
-  GROUP BY articles.article_id
+  FROM articles 
+  LEFT JOIN comments ON comments.article_id = articles.article_id`;
+
+  if (topic) {
+    queryVals.push(topic);
+    sqlQuery += ` WHERE articles.topic = $1`;
+  }
+
+  sqlQuery += ` GROUP BY articles.article_id 
   ORDER BY ${sortBy} ${order};`;
 
-  return db.query(sqlQuery).then(({ rows: articles }) => {
+  return db.query(sqlQuery, queryVals).then(({ rows: articles }) => {
+    if (articles.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "No Articles Found",
+      });
+    }
     return articles;
   });
 };

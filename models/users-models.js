@@ -19,3 +19,11 @@ exports.selectUserByUsername = (username) => {
     return rows[0];
   });
 };
+
+exports.selectUsers = () => {
+  return db
+    .query("SELECT users.username, users.name, users.avatar_url FROM users;")
+    .then(({ rows: users }) => {
+      return users;
+    });
+};

@@ -78,6 +78,7 @@ describe("App", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body: { articles } }) => {
+            expect(articles).toHaveLength(13);
             expect(articles).toBeSortedBy("created_at", {
               descending: true,
             });
@@ -90,6 +91,99 @@ describe("App", () => {
           .then(({ body: { articles } }) => {
             expect(articles[6].article_id).toBe(1);
             expect(articles[6].comment_count).toBe(11);
+          });
+      });
+    });
+    describe("?sort_by", () => {
+      test("GET:200 sorts articles by votes descending", () => {
+        return request(app)
+          .get("/api/articles?sort_by=votes")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("votes", {
+              descending: true,
+            });
+          });
+      });
+      test("GET:200 sorts articles by title descending", () => {
+        return request(app)
+          .get("/api/articles?sort_by=title")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("title", {
+              descending: true,
+            });
+          });
+      });
+      test("GET:200 sorts articles by topic descending", () => {
+        return request(app)
+          .get("/api/articles?sort_by=topic")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("topic", {
+              descending: true,
+            });
+          });
+      });
+      test("GET:200 sorts articles by author descending", () => {
+        return request(app)
+          .get("/api/articles?sort_by=author")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("author", {
+              descending: true,
+            });
+          });
+      });
+      test("GET:200 sorts articles by comment_count descending", () => {
+        return request(app)
+          .get("/api/articles?sort_by=comment_count")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy("comment_count", {
+              descending: true,
+            });
+          });
+      });
+      test("GET:400 responds with an appropriate status and error message when given an invalid column", () => {
+        return request(app)
+          .get("/api/articles?sort_by=article_img_url")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Invalid sort by query");
+          });
+      });
+    });
+    describe("?order", () => {
+      test("GET:200 sends an array of all articles by date order ascending", () => {
+        return request(app)
+          .get("/api/articles?order=asc")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toHaveLength(13);
+            expect(articles).toBeSortedBy("created_at", {
+              descending: false,
+            });
+          });
+      });
+      test("GET:200 sends an array of all articles by valid sort_by and order query", () => {
+        return request(app)
+          .get("/api/articles?sort_by=title&order=asc")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toHaveLength(13);
+            expect(articles[0].title).toBe("A");
+            expect(articles).toBeSortedBy("title", {
+              descending: false,
+            });
+          });
+      });
+      test("GET:400 sends an appropriate status and error message for an invalid order query", () => {
+        return request(app)
+          .get("/api/articles?order=invalid")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Invalid order query");
           });
       });
     });
@@ -411,6 +505,6 @@ describe("App", () => {
             });
           });
         });
-    });  
+    });
   });
 });

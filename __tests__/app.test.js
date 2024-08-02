@@ -575,4 +575,20 @@ describe("App", () => {
         });
     });
   });
+  describe.skip("/api/users/:username", () => {
+    test("GET:200 responds with a user object with the correct properties", () => {
+      const username = "rogersop";
+      return request(app)
+        .get(`/api/users/${username}`)
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: `${username}`,
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+            name: "paul",
+          });
+        });
+    });
+  });
 });

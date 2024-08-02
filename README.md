@@ -8,7 +8,7 @@ Hosted version (coming soon!)
 
 ### Summary
 
-An API that has been for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as Reddit) which should provide this information to the front end architecture.
+An API that has been built for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as Reddit) which should provide this information to the front end architecture.
 
 The database is PostgreSQL, and will interact with it using [node-postgres](https://node-postgres.com/).
 

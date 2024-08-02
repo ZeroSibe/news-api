@@ -4,7 +4,9 @@
 
 ### Link to hosted version
 
-Hosted version (coming soon!)
+[Hosted version](https://news-api-apvv.onrender.com/api/)
+
+*Please Note it may take a while to load*
 
 ### Summary
 
@@ -57,8 +59,6 @@ The [Husky documentation](https://typicode.github.io/husky/#/) explains how to c
 Recommend using Node v20.9.0 and Postgres v8.7.3
 
 ### To Do
-
-13. CORE: Host application
 
 14. CORE: Complete README
 

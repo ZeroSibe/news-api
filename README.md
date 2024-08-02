@@ -58,14 +58,6 @@ Recommend using Node v20.9.0 and Postgres v8.7.3
 
 ### To Do
 
-13. CORE: Host application
-
-14. CORE: Complete README
-
-15. ADVANCED: GET /api/articles (sorting queries)
-
-16. ADVANCED: Express Routers
-
 17. ADVANCED: GET /api/users/:username
 
 18. ADVANCED: PATCH /api/comments/:comment_id

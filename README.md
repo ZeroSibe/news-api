@@ -4,7 +4,9 @@
 
 ### Link to hosted version
 
-Hosted version (coming soon!)
+[Hosted version](https://news-api-apvv.onrender.com/api/)
+
+*Please Note it may take a while to load*
 
 ### Summary
 

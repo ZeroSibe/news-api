@@ -9,10 +9,41 @@ beforeEach(() => seed(data));
 afterAll(() => db.end());
 
 describe("App", () => {
-  describe("/api/bad-path", () => {
+  describe("/api/path-not-found", () => {
     test("GET:404 - returns appropriate status and error message for non-existent route", () => {
       return request(app)
-        .get("/api/invalid-route")
+        .get("/api/path-not-found")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Path Not Found");
+        });
+    });
+    test("PATCH:404 - responds with appropriate status and error message for non-existent route", () => {
+      return request(app)
+        .patch("/api/path-not-found")
+        .send({
+          inc_votes: 1,
+        })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Path Not Found");
+        });
+    });
+    test("POST:404 - responds with appropriate status and error message for non-existent route", () => {
+      return request(app)
+        .patch("/api/path-not-found")
+        .send({
+          username: "lurker",
+          body: "posting a 404",
+        })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Path Not Found");
+        });
+    });
+    test("DELETE:404 - responds with appropriate status and error message for non-existent route", () => {
+      return request(app)
+        .get("/api/path-not-found")
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Path Not Found");

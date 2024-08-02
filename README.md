@@ -20,7 +20,7 @@ To run this project locally, you can clone this project and run in your own envi
 
 1. Clone this repo in your own dev enviroment
 
-- In your terminal `git clone https://github.com/ZeroSibe/nc-news.git `
+- In your terminal `git clone https://github.com/ZeroSibe/news-api.git `
 
 2. In your terminal run `npm install` - to install all the dependencies.
 3. Run Tests

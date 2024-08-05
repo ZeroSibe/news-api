@@ -575,7 +575,7 @@ describe("App", () => {
         });
     });
   });
-  describe.skip("/api/users/:username", () => {
+  describe("/api/users/:username", () => {
     test("GET:200 responds with a user object with the correct properties", () => {
       const username = "rogersop";
       return request(app)
@@ -590,5 +590,23 @@ describe("App", () => {
           });
         });
     });
+    test("GET:404 responds with an appropriate status and error message when given a valid but non-existent username", () => {
+      const username = "iDontExist";
+      return request(app)
+        .get(`/api/users/${username}`)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(`User ${username} Not Found`);
+        });
+    });
+    test("GET:400 responds with an appropriate status and error message when given an invalid username",()=>{
+      const username = 123;
+      return request(app)
+        .get(`/api/users/${username}`)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Invalid username');
+        });
+    })
   });
 });

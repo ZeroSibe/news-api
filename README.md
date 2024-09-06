@@ -6,7 +6,7 @@
 
 [Hosted version](https://news-api-apvv.onrender.com/api/)
 
-*Please Note it may take a while to load*
+_Please Note it may take a while to load_
 
 ### Summary
 
@@ -59,10 +59,6 @@ The [Husky documentation](https://typicode.github.io/husky/#/) explains how to c
 Recommend using Node v20.9.0 and Postgres v8.7.3
 
 ### To Do
-
-17. ADVANCED: GET /api/users/:username
-
-18. ADVANCED: PATCH /api/comments/:comment_id
 
 19. ADVANCED: POST /api/articles
 

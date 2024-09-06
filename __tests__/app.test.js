@@ -557,6 +557,94 @@ describe("App", () => {
           expect(msg).toBe("Invalid Comment ID");
         });
     });
+    test("PATCH:200 sends updated comment back to client - increment vote", () => {
+      const body = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(body)
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment).toMatchObject({
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 17,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: convertTimestampToDate(1586179020000),
+          });
+        });
+    });
+    test("PATCH:200 sends updated comment back to client - decrement vote", () => {
+      const body = {
+        inc_votes: -1,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(body)
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment).toMatchObject({
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 15,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: convertTimestampToDate(1586179020000),
+          });
+        });
+    });
+    test("PATCH:404 responds with appropriate status and error message when given a valid but non-existent id", () => {
+      const body = {
+        inc_votes: -1,
+      };
+      return request(app)
+        .patch("/api/comments/9999")
+        .send(body)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Comment 9999 Not Found");
+        });
+    });
+    test("PATCH:400 responds with appropriate status and error message when given an invalid id", () => {
+      const body = {
+        inc_votes: -1,
+      };
+      return request(app)
+        .patch("/api/comments/invalid")
+        .send(body)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid Comment ID");
+        });
+    });
+    test("PATCH:400 responds with appropriate status and error message when given an invalid vote type", () => {
+      const body = {
+        inc_votes: "invalid type",
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(body)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(
+            "bad request to comment: inc_votes must be a number"
+          );
+        });
+    });
+    test("PATCH:400 responds with appropriate status and error message when given an invalid/missing propery", () => {
+      const body = {
+        missing: 1,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(body)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(
+            "bad request to comment: inc_votes must be a number"
+          );
+        });
+    });
   });
   describe("/api/users", () => {
     test("GET:200 responds with an array of user objects with the correct properties", () => {
@@ -599,14 +687,14 @@ describe("App", () => {
           expect(msg).toBe(`User ${username} Not Found`);
         });
     });
-    test("GET:400 responds with an appropriate status and error message when given an invalid username",()=>{
+    test("GET:400 responds with an appropriate status and error message when given an invalid username", () => {
       const username = 123;
       return request(app)
         .get(`/api/users/${username}`)
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe('Invalid username');
+          expect(msg).toBe("Invalid username");
         });
-    })
+    });
   });
 });

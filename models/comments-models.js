@@ -58,3 +58,27 @@ exports.deleteCommentById = (commentId) => {
     }
   });
 };
+
+exports.updateComment = (commentId, newVote) => {
+  if (isNaN(Number(commentId))) {
+    return Promise.reject({ status: 400, msg: "Invalid Comment ID" });
+  }
+  if (isNaN(Number(newVote))) {
+    return Promise.reject({
+      status: 400,
+      msg: "bad request to comment: inc_votes must be a number",
+    });
+  }
+
+  const queryVals = [newVote, commentId];
+  const queryStr = `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *;`;
+  return db.query(queryStr, queryVals).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `Comment ${commentId} Not Found`,
+      });
+    }
+    return rows[0];
+  });
+};

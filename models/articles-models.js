@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const articles = require("../db/data/test-data/articles");
 
 exports.selectArticles = (sortBy = "created_at", order = "desc", topic) => {
   const validSortBys = [
@@ -60,15 +61,20 @@ exports.selectArticleById = (articleId) => {
     return Promise.reject({ status: 400, msg: "Invalid Article ID" });
   }
 
-  let sqlQuery = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url, 
+  let sqlQuery = `
+  SELECT 
+  articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, articles.article_img_url, 
   COUNT(comments.article_id)::INT AS comment_count 
   FROM articles 
-  LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;`;
+  LEFT JOIN comments ON comments.article_id = articles.article_id 
+  WHERE articles.article_id = $1 
+  GROUP BY articles.article_id;
+  `;
 
   let queryVals = [articleId];
 
   return db.query(sqlQuery, queryVals).then(({ rows }) => {
-    if (rows.length === 0) {
+    if (!rows.length) {
       return Promise.reject({
         status: 404,
         msg: `Article ${articleId} Not Found`,
@@ -97,5 +103,32 @@ exports.updateArticle = (articleId, newVote) => {
       });
     }
     return rows[0];
+  });
+};
+
+exports.insertArticle = (newArticle) => {
+  const {
+    author,
+    title,
+    body,
+    topic,
+    article_img_url = "https://picsum.photos/id/237/700/700",
+  } = newArticle;
+
+  if (!author || !title || !body || !topic) {
+    return Promise.reject({
+      status: 400,
+      msg: "Could not post Article, missing required field",
+    });
+  }
+
+  const queryVals = [author, title, body, topic, article_img_url];
+  const sqlQuery = `
+  INSERT INTO articles (author, title, body, topic, article_img_url)
+  VALUES ($1, $2, $3, $4, $5)
+  RETURNING article_id;
+  `;
+  return db.query(sqlQuery, queryVals).then(({ rows }) => {
+    return rows[0].article_id;
   });
 };

@@ -60,9 +60,7 @@ Recommend using Node v20.9.0 and Postgres v8.7.3
 
 ### To Do
 
-19. ADVANCED: POST /api/articles
-
-20. ADVANCED: GET /api/articles (pagination)
+20. ADVANCED: GET /api/articles (pagination) [04/12/24]
 
 21. ADVANCED: GET /api/articles/:article_id/comments (pagination)
 

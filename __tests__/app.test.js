@@ -247,6 +247,143 @@ describe("App", () => {
           });
       });
     });
+    describe("POST /api/articles", () => {
+      test("POST:201 inserts a new article to the db and sends the newly created article back to the client", () => {
+        const newArticle = {
+          author: "lurker",
+          title: "A 201 Article",
+          body: "An article about posting a 201 article",
+          topic: "cats",
+          article_img_url: "https://picsum.photos/id/237/200/300",
+        };
+        return request(app)
+          .post("/api/articles")
+          .send(newArticle)
+          .expect(201)
+          .then(({ body: { article } }) => {
+            expect(article).toMatchObject({
+              article_id: expect.any(Number),
+              title: newArticle.title,
+              topic: newArticle.topic,
+              author: newArticle.author,
+              body: newArticle.body,
+              created_at: expect.any(String),
+              votes: 0,
+              article_img_url: newArticle.article_img_url,
+              comment_count: 0,
+            });
+          });
+      });
+      test("POST:201 - defaults article_img_url if not provided ", () => {
+        const newArticle = {
+          author: "lurker",
+          title: "A 201 Article",
+          body: "An article about posting a 201 article",
+          topic: "cats",
+        };
+        return request(app)
+          .post("/api/articles")
+          .send(newArticle)
+          .expect(201)
+          .then(({ body: { article } }) => {
+            expect(article.article_img_url).toBe(
+              "https://picsum.photos/id/237/700/700"
+            );
+          });
+      });
+      test("POST:400 responds with an appropriate status and error message if required fields are missing - author", () => {
+        const badArticle = {
+          title: "A 201 Article",
+          body: "An article about posting a 201 article",
+          topic: "cats",
+          article_img_url: "https://picsum.photos/id/237/200/300",
+        };
+        return request(app)
+          .post("/api/articles")
+          .send(badArticle)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Invalid username");
+          });
+      });
+      test("POST:400 responds with an appropriate status and error message if required fields are missing - body", () => {
+        const badArticle = {
+          author: "lurker",
+          title: "A 201 Article",
+          topic: "cats",
+          article_img_url: "https://picsum.photos/id/237/200/300",
+        };
+        return request(app)
+          .post("/api/articles")
+          .send(badArticle)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Could not post Article, missing required field");
+          });
+      });
+      test("POST:400 responds with an appropriate status and error message if required fields are missing - title", () => {
+        const badArticle = {
+          author: "lurker",
+          body: "An article about posting a 201 article",
+          topic: "cats",
+          article_img_url: "https://picsum.photos/id/237/200/300",
+        };
+        return request(app)
+          .post("/api/articles")
+          .send(badArticle)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Could not post Article, missing required field");
+          });
+      });
+      test("POST:400 responds with an appropriate status and error message if required fields are missing - topic", () => {
+        const badArticle = {
+          author: "lurker",
+          title: "A 201 Article",
+          body: "An article about posting a 201 article",
+          article_img_url: "https://picsum.photos/id/237/200/300",
+        };
+        return request(app)
+          .post("/api/articles")
+          .send(badArticle)
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Invalid topic name");
+          });
+      });
+      test("POST:404 responds with an appropriate status and error message when given a valid author but non-existent author", () => {
+        const newArticle = {
+          author: "iDontExist",
+          title: "A 201 Article",
+          body: "An article about posting a 201 article",
+          topic: "cats",
+          article_img_url: "https://picsum.photos/id/237/200/300",
+        };
+        return request(app)
+          .post("/api/articles")
+          .send(newArticle)
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("User iDontExist Not Found");
+          });
+      });
+      test("POST:404 responds with an appropriate status and error message when given a valid topic but non-existent topic", () => {
+        const newArticle = {
+          author: "lurker",
+          title: "A 201 Article",
+          body: "An article about posting a 201 article",
+          topic: "topic404",
+          article_img_url: "https://picsum.photos/id/237/200/300",
+        };
+        return request(app)
+          .post("/api/articles")
+          .send(newArticle)
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Topic topic404 Not Found");
+          });
+      });
+    });
   });
   describe("/api/articles/:article_id", () => {
     test("GET:200 responds with an article object with the correct properties", () => {

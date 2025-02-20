@@ -287,7 +287,7 @@ describe("App", () => {
           .expect(201)
           .then(({ body: { article } }) => {
             expect(article.article_img_url).toBe(
-              "https://picsum.photos/id/237/700/700"
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
             );
           });
       });

@@ -1,48 +1,134 @@
-#### Back End JS > News API (remastered)
-
 # News API
 
-### Link to hosted version
+## Hosted Site
 
-[Hosted version](https://news-api-apvv.onrender.com/api/)
+https://news-api-apvv.onrender.com/api/
 
 _Please Note it may take a while to load_
 
-### Summary
+---
 
-An API that has been built for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as Reddit) which should provide this information to the front end architecture.
-
-The database is PostgreSQL, and will interact with it using [node-postgres](https://node-postgres.com/).
+- [About NEWS API](#about-news-api)
+- [Prerequisites](#prerequisites)
+- [Project Set Up](#project-set-up)
 
 ---
 
-### Getting Started
+## About NEWS API
 
-To run this project locally, you can clone this project and run in your own enviroment.
+NEWS API is a RESTful API built using [Express.js](https://expressjs.com/).
 
-1. Clone this repo in your own dev enviroment
+NEWS API that has been built for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as Reddit) which should provide this information to the front end architecture, such as [NEWS](https://github.com/ZeroSibe/news).
 
-- In your terminal `git clone https://github.com/ZeroSibe/news-api.git `
+The database is PostgreSQL, and will interact with it using [node-postgres](https://node-postgres.com/).
 
-2. In your terminal run `npm install` - to install all the dependencies.
-3. Run Tests
+The API is hosted using Render and the database is hosted using [Supabase](http://supabase.com/).
 
-- you can run all the test suites, run the script `npm run test` in your terminal to check
-- alternatively, you can run specific test files `npm t <test file name>`
+## Prerequisites
 
-4. This project requires two `.env` files
+To use this project, you need to install the following on your system:
 
-- create your enviroment variables in a `.env.test` and `.env.development` file in the root directory of this project
+- Node.js v20.9.0 or greater
+- PostgreSQL v14.10 or greater
 
-- into each file add the database name `PGDATABASE = <database_name_here>`
+## Project Set Up
 
-- For reference look inside `.env-example`.
+To set up this project locally
 
-5. To create and seed your local databases, run the scripts `npm run setup-dbs` in your terminal, and then run `npm run seed`
+1. Clone the repository:
 
-6. To run the server with the development data, in your terminal run `npm run start`
+```
 
-- you'll be listening on port `9090`
+git clone https://github.com/ZeroSibe/news-api.git
+
+```
+
+2. Navigate to the project directory:
+
+```
+cd news-api
+
+```
+
+3. Install all the dependencies:
+
+```
+npm install
+
+```
+
+4. Set up the enviroment variables:
+
+- create files `.env.test` and `.env.development` in the root directory of the project
+
+- into each file write:
+
+```
+PGDATABASE = database_name_here
+
+```
+
+_for reference, for `.env.development`, you would write `PGDATABASE=nc_n` where nc_n is the database name for development and nc_n_test is the databse name for test enviroment_
+
+- if access to your local database requires a password, include it in your files:
+
+```
+
+PGPASSWORD=your-password-here
+
+```
+
+_you can omit this line, if password is not required. Check if you need this before you add it in_
+
+5. Set up the local database:
+
+- Create the databases:
+
+```
+npm run setup-dbs
+
+```
+
+- Seed the development database:
+
+```
+
+npm run seed
+
+```
+
+6. Run Server
+
+- To allow the server to listen to incoming requests:
+
+```
+
+npm run start
+
+```
+
+_This will allow you to make requests to the API via `localhost:9090/api`. You can use tools like Insomnia to send JSON requests_
+
+7. Close Server
+
+- To terminate the node instance, type CTRL + C in your termal,
+
+8. Run Tests
+
+```
+npm t
+
+```
+
+- alternatively, you can run specific test files
+
+```
+
+npm t <test file name>
+
+```
+
+_The test suite uses the test database to check all endpoints work as intended_
 
 ---
 
@@ -54,13 +140,9 @@ The [Husky documentation](https://typicode.github.io/husky/#/) explains how to c
 
 ---
 
-### Minimum Requirements
+### To Do (Future Enhancements)
 
-Recommend using Node v20.9.0 and Postgres v8.7.3
-
-### To Do
-
-20. ADVANCED: GET /api/articles (pagination) [04/12/24]
+20. ADVANCED: GET /api/articles (pagination)
 
 21. ADVANCED: GET /api/articles/:article_id/comments (pagination)
 
@@ -68,4 +150,4 @@ Recommend using Node v20.9.0 and Postgres v8.7.3
 
 23. ADVANCED: DELETE /api/articles/:article_id
 
-24. Conclusion
+24. Conclusion - review

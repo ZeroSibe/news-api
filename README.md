@@ -2,7 +2,7 @@
 
 ## Hosted Site
 
-https://news-api-apvv.onrender.com/api/
+[NEWS API](https://news-api-apvv.onrender.com/api/)
 
 _Please Note it may take a while to load_
 
@@ -142,7 +142,7 @@ The [Husky documentation](https://typicode.github.io/husky/#/) explains how to c
 
 ### To Do (Future Enhancements)
 
-20. ADVANCED: GET /api/articles (pagination)
+20. ADVANCED: GET /api/articles (pagination) - completed, branch 20_articles_pagination
 
 21. ADVANCED: GET /api/articles/:article_id/comments (pagination)
 

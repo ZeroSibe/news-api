@@ -142,12 +142,12 @@ The [Husky documentation](https://typicode.github.io/husky/#/) explains how to c
 
 ### To Do (Future Enhancements)
 
-20. ADVANCED: GET /api/articles (pagination) - completed, branch 20_articles_pagination
+20. GET /api/articles (pagination) - completed, branch 20_articles_pagination
 
-21. ADVANCED: GET /api/articles/:article_id/comments (pagination)
+21. GET /api/articles/:article_id/comments (pagination)
 
-22. ADVANCED: POST /api/topics
+22. POST /api/topics
 
-23. ADVANCED: DELETE /api/articles/:article_id
+23. DELETE /api/articles/:article_id
 
 24. Conclusion - review

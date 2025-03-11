@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const request = require("supertest");
 const app = require("../app");
 const { convertTimestampToDate } = require("../db/seeds/utils");
+const articles = require("../db/data/test-data/articles");
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
@@ -83,7 +84,7 @@ describe("App", () => {
   });
   describe("/api/articles", () => {
     describe("GET /api/articles", () => {
-      test("GET:200 responds with an array of article objects with the correct properties", () => {
+      test.skip("GET:200 responds with an array of article objects with the correct properties", () => {
         return request(app)
           .get("/api/articles")
           .expect(200)
@@ -109,7 +110,7 @@ describe("App", () => {
           .get("/api/articles")
           .expect(200)
           .then(({ body: { articles } }) => {
-            expect(articles).toHaveLength(13);
+            expect(articles).toHaveLength(10);
             expect(articles).toBeSortedBy("created_at", {
               descending: true,
             });
@@ -122,6 +123,28 @@ describe("App", () => {
           .then(({ body: { articles } }) => {
             expect(articles[6].article_id).toBe(1);
             expect(articles[6].comment_count).toBe(11);
+          });
+      });
+      test("GET:200 sends a default limit of 10 articles per page to the client with a total_count", () => {
+        return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body: { articles, total_count } }) => {
+            expect(articles).toHaveLength(10);
+            expect(total_count).toBe(13);
+            articles.forEach((article) => {
+              expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String),
+                comment_count: expect.any(Number),
+              });
+              expect(article).not.toHaveProperty("body");
+            });
           });
       });
     });
@@ -190,8 +213,9 @@ describe("App", () => {
         return request(app)
           .get("/api/articles?order=asc")
           .expect(200)
-          .then(({ body: { articles } }) => {
-            expect(articles).toHaveLength(13);
+          .then(({ body: { articles, total_count } }) => {
+            expect(articles).toHaveLength(10);
+            expect(total_count).toBe(13);
             expect(articles).toBeSortedBy("created_at", {
               descending: false,
             });
@@ -201,8 +225,9 @@ describe("App", () => {
         return request(app)
           .get("/api/articles?sort_by=title&order=asc")
           .expect(200)
-          .then(({ body: { articles } }) => {
-            expect(articles).toHaveLength(13);
+          .then(({ body: { articles, total_count } }) => {
+            expect(articles).toHaveLength(10);
+            expect(total_count).toBe(13);
             expect(articles[0].title).toBe("A");
             expect(articles).toBeSortedBy("title", {
               descending: false,
@@ -223,8 +248,9 @@ describe("App", () => {
         return request(app)
           .get("/api/articles?topic=mitch")
           .expect(200)
-          .then(({ body: { articles } }) => {
-            expect(articles).toHaveLength(12);
+          .then(({ body: { articles, total_count } }) => {
+            expect(articles).toHaveLength(10);
+            expect(total_count).toBe(12);
             articles.forEach((article) => {
               expect(article.topic).toBe("mitch");
             });
@@ -247,6 +273,63 @@ describe("App", () => {
           });
       });
     });
+    describe("?limit and ?p and total_count property", () => {
+      test("GET:200 accepts a limit query which overides default limit (10) and provides a total_count property, discontinuing the limit", () => {
+        return request(app)
+          .get("/api/articles?limit=5")
+          .expect(200)
+          .then(({ body: { articles, total_count } }) => {
+            expect(articles).toHaveLength(5);
+            expect(total_count).toBe(13);
+          });
+      });
+      test("GET:200 accepts a page query which will respond with the 3rd page of articles", () => {
+        return request(app)
+          .get("/api/articles?limit=5&&p=3")
+          .expect(200)
+          .then(({ body: { articles, total_count } }) => {
+            expect(articles).toHaveLength(3);
+            expect(total_count).toBe(13);
+          });
+      });
+      test("GET:200 responds with the correct total count when topic query is applied", () => {
+        return request(app)
+          .get("/api/articles?topic=mitch&&limit=5")
+          .expect(200)
+          .then(({ body: { articles, total_count } }) => {
+            expect(articles).toHaveLength(5);
+            expect(total_count).toBe(12);
+            articles.forEach((article) => {
+              expect(article.topic).toBe("mitch");
+            });
+          });
+      });
+      test("GET:404 sends an appropriate status and error message for valid but non-existent page query", () => {
+        return request(app)
+          .get("/api/articles?limit=5&&p=4")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("No Articles Found");
+          });
+      });
+      test("GET:400 sends an appropriate status and error message for invalid page query", () => {
+        return request(app)
+          .get("/api/articles?p=invalid")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Invalid Articles query");
+          });
+      });
+      test("GET:400 sends an appropriate status and error message for invalid limit query", () => {
+        return request(app)
+          .get("/api/articles?limit=invalid")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Invalid Articles query");
+          });
+      });
+    });
+
     describe("POST /api/articles", () => {
       test("POST:201 inserts a new article to the db and sends the newly created article back to the client", () => {
         const newArticle = {
